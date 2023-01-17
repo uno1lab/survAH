@@ -41,3 +41,12 @@ vignettes/*.pdf
 # CRAN submission
 cran-comments.md
 .Rbuildignore
+
+README.Rmd
+*.Rproj
+Meta/*
+/Meta/
+doc/*
+doc/*.*
+/doc/
+

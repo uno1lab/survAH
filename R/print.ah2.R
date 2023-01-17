@@ -1,0 +1,43 @@
+#' @name print.ah2
+#' @aliases print.ah2
+#' @title print.ah2
+#' @description S3 method for class 'ah2'
+#' @usage \method{print}{ah2}(x, digits=3, ...)
+#' @param x Object to be printed.
+#' @param digits Integer indicating the number of decimal places.
+#' @param ... Further arguments ignored in this function.
+#' @return returns summary output for class 'ah2'
+#' @export
+######################################
+# print.ah2 (hidden)
+######################################
+print.ah2=function(x, digits=3,...){
+
+  cat("\n")
+
+  cat(x$note)
+
+  cat("\n\n")
+
+  #--
+  cat ("Number of observations: \n")
+
+  prmatrix(x$n.obs)
+
+  cat("\n\n")
+
+  #---
+  cat ("Average Hazard (AH) by arm: \n")
+
+  prmatrix(round(x$ah , digits=digits))
+
+  cat("\n\n")
+
+  cat ("Between-group contrast: \n")
+
+  prmatrix(round(rbind(x$rah, x$dah), digits=digits))
+
+  invisible(x)
+
+}
+NULL

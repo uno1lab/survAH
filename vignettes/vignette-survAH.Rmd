@@ -1,0 +1,154 @@
+---
+title: "Vignette for survAH package"
+author: "Hajime Uno^[Dana-Farber Cancer Institute, huno@ds.dfci.harvard.edu], Miki
+  Horiguchi^[Dana-Farber Cancer Institute, horiguchimiki@gmail.com]"
+date: "January 16, 2023"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Vignette for survAH package}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## 1 Introduction
+
+An important objective of clinical research investigating the safety and efficacy of a new intervention is to provide quantitative information about the intervention effect on clinical outcomes. Such quantitative information is critical for informed treatment decision making to balance the risks and benefits of the new intervention.
+In those studies where time-to-event outcomes are clinical endpoints of interest, the traditional Cox's hazard ratio (HR) has been used for estimating and reporting the treatment effect magnitude for many decades. However, this traditional approach may not have provided the sufficient quantitative information that is needed for informed decision making in clinical practice for the following reasons. 
+First, this approach does not require calculating the absolute hazard in each group in order to calculate the HR, which is a desirable feature from a statistical point of view, but which makes the clinical interpretation difficult. From the clinical point of view, the two numbers from the treatment and control groups are necessary for interpreting a between-group contrast measure (e.g., difference or ratio). Second, if the proportional hazards assumption is not correct, the interpretation of HR is not obvious because it is affected by the underlying study-specific censoring time distribution.[1,2] 
+
+The average hazard with survival weight (AHSW), which can be interpreted as the general censoring-free incidence rate (CFIR), is a summary measure of the event time distribution and does not depend on the underlying study-specific censoring time distribution. The approach using AHSW (or CFIR) provides two numbers from the treatment and control groups and allows us to summarize the treatment effect magnitude in both absolute and relative terms, which would enhance the clinical interpretation of the treatment effect on time-to-event outcomes.[3] 
+
+This vignette is a supplemental documentation for the *survAH* package and illustrates how to use the functions in the package to compare two groups with respect to the AHSW (or CFIR). The package was made and tested on R version 4.2.2.
+
+## 2 Installation
+
+Open the R or RStudio applications. Then, copy and paste either of the following scripts to the command line.
+
+
+To install the package from the CRAN:
+
+```{r, echo=TRUE, eval=FALSE}
+install.packages("survAH")
+```
+
+To install the development version:
+
+```{r, echo=TRUE, eval=FALSE}
+install.packages("devtools") #-- if the devtools package has not been installed
+devtools::install_github("uno1lab/survAH")
+```
+
+## 2 Sample Reconstructed Data
+
+Throughout this vignette, we use sample reconstructed data of the CheckMate214 study  reported by Motzer et al. [4] The data consists of 847 patients with previously untreated clear-cell advanced renal-cell carcinoma; 425 for the nivolumab plus ipilimumab group (treatment) and 422 for the sunitinib group (control).
+
+The sample reconstructed data of the CheckMate214 study is available on *survAH* package as *cm214_pfs*.
+To load the data, copy and paste the following scripts to the command line.
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+library(survAH)
+
+nrow(cm214_pfs)
+
+head(cm214_pfs)
+```
+
+Here, **time** is months from the registration to progression-free survival (PFS), **status** is the indicator of the event (1: event, 0: censor), and **arm** is the treatment assignment indicator (1: Treatment group, 0: Control group).
+
+Below are the Kaplan-Meier estimates for the PFS for each treatment group. 
+
+```{r, echo=FALSE, eval=TRUE, fig.height=6, fig.width=6}
+library(survival)
+plot(survfit(Surv(time, status)~arm, data=cm214_pfs), col=c("blue","red"), lwd=2, mark.time=F, xlab="Time (month)", ylab="Probability")
+legend("bottomleft", c("Placebo (arm=0)","Treatment (arm=1)"), col=c("blue","red"), lwd=2)
+```
+
+The two survival curves showed similar trajectories up to six months, but after that, a difference appeared between the two groups. This is the so-called delayed difference pattern often seen in immunotherapy trials. The HR based on the traditional Cox's method was 0.82 (0.95CI: 0.68 to 0.99, p-value=0.037).
+Since the validity of the proportional hazards assumption was not clear in this study, there is no clear interpretation on the reported HR. Even if the proportional hazards assumption seemed to be reasonable, the lack of a group-specific absolute value regarding hazard makes the clinical interpretation of the treatment effect difficult. For example, if the baseline absolute hazard is very low, the reported HR (0.82) may indicate a clinically ignorable treatment effect magnitude. If it is high, even an HR that is closer to 1 (e.g., 0.98) may  indicate a clinically significant treatment effect magnitude. 
+
+## 3 Average Hazard with Survival Weight (AHSW)
+For a given $\tau,$ a general form of the average hazard (AH) is denoted by 
+$$ \eta(t) = \frac{\int_0^\tau h(u)w(u)du}{\int_0^\tau w(u)du},$$
+where $h(t)$ and $w(t)$ are the hazard function for the event time $T,$ and a non-negative weight function, respectively. 
+Let $S(t)$ be the survival function for $T.$
+We use $S(t)$ as the weight, which gives the AHSW
+$$ \eta(t) = \frac{\int_0^\tau h(u)S(u)du}{\int_0^\tau S(u)du}.$$
+The detailed motivation for using $S(t)$ as $w(t)$ was discussed in Uno and Horiguchi [3].
+The AHSW has a clear interpretation as the average person-time incidence rate on a given time window $[0,\tau].$
+It can also be called as the general censoring-free incidence rate (CFIR) in contrast to the conventional person-time incidence rate that potentially depends on an underlying study-specific censoring time distribution.
+
+From now on, we simply call the AHSW (or CFIR) the average hazard (AH).
+The AH is denoted by the ratio of cumulative incidence probability and restricted mean survival time at $\tau < \infty$: 
+$$ \eta(\tau) = \frac{1-S(\tau)}{\int_0^\tau S(t)dt}.$$
+
+Let $\hat{S}(t)$ denote the Kaplan-Meier estimator for $S(t).$
+A natural estimator for $\eta(\tau)$ is then given by  
+$$ \hat{\eta}(\tau) = \frac{1-\hat{S}(\tau)}{\int_0^\tau \hat{S}(t)dt}.$$
+The large sample properties and a standard error formula of $\hat{\eta}(\tau)$ are given in Uno and Horiguchi [3].
+
+
+## 4 Two-sample comparison using AH and its implementation
+
+Let $\eta_{1}(\tau)$ and $\eta_{0}(\tau)$ denote the AH for treatment group 1 and 0, respectively. Now, we compare the two survival curves, using the AH. 
+Specifically, we consider the following two measures to capture the between-group contrast: 
+
+1. Difference in AH (DAH)
+$$ \eta_{1}(\tau) - \eta_{0}(\tau) $$
+2. Ratio of AH (RAH)
+$$ \eta_{1}(\tau) / \eta_{0}(\tau) $$
+
+
+These are estimated by simply replacing $\eta_{1}(\tau)$ and $\eta_{0}(\tau)$ by their empirical counterparts (i.e., $\hat{\eta_{1}}(\tau)$ and $\hat{\eta_{0}}(\tau)$, respectively). For the inference of the ratio type metrics, we use the delta method to calculate the standard error. Specifically, we consider $\log \{ \hat{\eta_{1}}(\tau)\}$ and $\log \{ \hat{\eta_{0}}(\tau)\}$ and calculate the standard error of log-AH.
+We then calculate a confidence interval for the log-ratio of AH, and transform it back to the original ratio scale; the detailed formula is given in [4].
+
+The procedures below show how to use the function, **ah2**, to implement these analyses.
+```{r, echo=TRUE, eval=TRUE}
+time   = cm214_pfs$time
+status = cm214_pfs$status
+arm    = cm214_pfs$arm
+```
+
+```{r, echo=TRUE, eval=FALSE}
+ah2(time, status, arm, tau=21)
+```
+
+The first argument (**time**) is the time-to-event vector variable. 
+The second argument (**status**) is also a vector variable with the same length as **time**, each of the elements takes either 1 (if event) or 0 (if no event). 
+The third argument (**arm**) is a vector variable to indicate the assigned treatment of each subject; the elements of this vector take either 1 (if the active treatment arm) or 0 (if the control arm).
+The fourth argument (**tau**) is a scalar value to specify the truncation time point ${\tau}$ for the AH calculation.
+
+When $\tau$ is not specified in **ah2**, (i.e., when the code looks like below)
+```{r, echo=TRUE, eval=FALSE}
+ah2(time, status, arm)
+```
+the default $\tau$ (i.e., the maximum time point where the size of risk set for both groups remains at least 10) is used to calculate the AH.
+It is best to confirm that the size of the risk set is large enough at the specified $\tau$ in each group to make sure the Kaplan-Meier estimates are stable.     
+
+The **ah2** function returns AH on each group and the results of the between-group contrast measures listed above. Note that we chose 21 months for $\tau$ in this example.
+
+```{r, echo=TRUE, eval=TRUE}
+obj = ah2(time, status, arm, tau=21)
+print(obj, digits=3)
+```
+
+The estimated AHs were 0.049 (0.95CI: 0.042 to 0.057) and 0.066 (0.95CI: 0.057 to 0.076) for the treatment group and the control group, respectively. The ratio and difference of AH were 0.747 (0.95CI: 0.608 to 0.917, p-value=0.005) and -0.017 (0.95CI: -0.029 to -0.005, p-value=0.006), respectively.
+
+
+## 5 Conclusions
+As illustrated, the presented approach using AHSW provides more robust and reliable quantitative information about the treatment effect on time-to-event outcomes than the traditional Cox's hazard ratio approach. 
+We hope the AHSW-based approach, along with this *survAH* package, will be helpful to clinical researchers by providing interpretable quantitative information about the treatment effect magnitude, which will ultimately foster better informed decision making.  
+
+## References
+[1] Uno H, Claggett B, Tian L, et al. (2014). Moving beyond the hazard ratio in quantifying the between-group difference in survival analysis. *Journal of clinical oncology : official journal of the American Society of Clinical Oncology* **32**, 2380-2385. <https://doi.org/10.1200/JCO.2014.55.2208>     
+
+[2] Horiguchi M, Hassett MJ, Uno H (2019). How do the accrual pattern and follow-up duration affect the hazard ratio estimate when the proportional hazards assumption is violated? *Oncologist* **24(7)**, 867-871. <https://doi.org/10.1634/theoncologist.2018-0141>
+
+[3] Uno H and Horiguchi M (2023). Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. *Statistics in Medicine* **Online first**, 1-17. <https://doi.org/10.1002/sim.9651>
+
+[4] Motzer RJ, Tannir NM, McDermott DF, et al. (2018). Nivolumab plus ipilimumab versus sunitinib in advanced renal-cell carcinoma. *New England Journal of Medicine* **378(14)**, 1277–1290. <https://doi.org/10.1056/NEJMoa1712126>

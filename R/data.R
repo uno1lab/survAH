@@ -1,0 +1,18 @@
+#' @name cm214_pfs
+#' @aliases cm214_pfs
+#' @docType data
+#' @title Sample Reconstructed Data of CheckMate214 Study
+#' @description The progression-free survival data reconstructed from the publication of the CheckMate214 study.
+#' @usage data(cm214_pfs)
+#' @details This is a reconstructed patient-level data from the results reported by Motzer et al.(2018) <doi:10.1056/NEJMoa1712126>.
+#' The data consists of 847 patients with previously untreated clear-cell advanced renal-cell carcinoma; 425 for the nivolumab plus ipilimumab group (treatment) and 422 for the sunitinib group (control).
+#' @source Motzer RJ, Tannir NM, McDermott DF, et al. Nivolumab plus ipilimumab versus sunitinib in advanced renal-cell carcinoma.
+#' New England Journal of Medicine. 2018;378(14):1277–1290. <doi:10.1056/NEJMoa1712126>
+#' Guyot P, Ades AE, Ouwens MJ, Welton NJ. Enhanced secondary analysis of survival data: reconstructing the data from published Kaplan-Meier survival curves. BMC Med Res Methodol. 2012;12(1):9. <doi:10.1186/1471-2288-12-9>
+#' @format A dataset containing 3 columns:
+#' \describe{
+#'   \item{time}{the time-to-event variable (the time unit is month)}
+#'   \item{status}{the event indicator (1=event, 0=censor)}
+#'   \item{arm}{the treatment indicator (1=treatment, 0=control)}
+#' }
+"cm214_pfs"

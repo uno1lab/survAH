@@ -1,0 +1,19 @@
+Package: survAH
+Type: Package
+Title: Survival Data Analysis using Average Hazard
+Version: 1.0.0
+Date: 2023-01-16
+Authors@R: c(
+    person("Hajime", "Uno", role = "aut",
+           comment = c(ORCID = "0000-0003-0622-8471")),
+    person("Miki", "Horiguchi", , "horiguchimiki@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-9800-1954"))
+  )
+Description: Performs two-sample comparisons based on average hazard with survival weight (AHSW) or general censoring-free incidence rate (CFIR) proposed by Uno and Horiguchi (2023) <doi:10.1002/sim.9651>.
+License: GPL-2
+Depends: survival, R (>= 2.10)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr

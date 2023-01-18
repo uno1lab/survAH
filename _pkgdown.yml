@@ -1,4 +1,4 @@
-url: https://uno1lab.com/survAH/
+url: https://www.uno1lab.com/survAH/
 
 home:
   title: Comparing Average Hazard with Survival Weight
@@ -21,7 +21,7 @@ navbar:
     left:  [reference, articles, news, tutorials]
     right: [search, github]
   right:
-    - href: https://github.com/uno1lab/survAH
+    - href: https://www.uno1lab.com/survAH/
       icon: fa-github
 
 development:

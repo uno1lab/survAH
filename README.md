@@ -22,7 +22,7 @@ devtools::install_github("uno1lab/survAH")
 ## Usage
 
 Please see the package vignette on the website
-<https://uno1lab.github.io/survAH/>
+<https://www.uno1lab.com/survAH/>
 
 ## Reference
 

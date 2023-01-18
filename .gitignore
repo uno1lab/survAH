@@ -42,7 +42,6 @@ vignettes/*.pdf
 cran-comments.md
 .Rbuildignore
 
-README.Rmd
 *.Rproj
 Meta/*
 /Meta/

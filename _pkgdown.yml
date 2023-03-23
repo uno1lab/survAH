@@ -21,7 +21,7 @@ navbar:
     left:  [reference, articles, news, tutorials]
     right: [search, github]
   right:
-    - href: https://www.uno1lab.com/survAH/
+    - href: https://github.com/uno1lab/survAH
       icon: fa-github
 
 development:

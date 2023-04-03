@@ -49,3 +49,4 @@ doc/*
 doc/*.*
 /doc/
 
+.DS_Store

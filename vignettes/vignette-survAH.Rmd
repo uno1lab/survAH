@@ -115,7 +115,7 @@ arm    = cm214_pfs$arm
 ```
 
 ```{r, echo=TRUE, eval=FALSE}
-ah2(time, status, arm, tau=21)
+ah2(time=time, status=status, arm=arm, tau=21)
 ```
 
 The first argument (**time**) is the time-to-event vector variable. 

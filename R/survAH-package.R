@@ -1,10 +1,14 @@
 #' @name survAH-package
 #' @aliases  survAH-package
-#' @docType  package
 #' @title Survival Data Analysis using Average Hazard
 #' @description The survAH package performs two-sample comparisons based on average hazard with survival weight (AHSW) or general censoring-free incidence rate (CFIR) proposed by Uno and Horiguchi (2023) <doi:10.1002/sim.9651>.
-#' @author Hajime Uno, Miki Horiguchi
-#' @references Uno H and Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. Statistics in Medicine. 2023;1-17. <doi:10.1002/sim.9651>
+#' @author Hajime Uno, Miki Horiguchi, Zihan Qian
+#' @references 
+#' Uno H and Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. Statistics in Medicine. 2023;1-17. <doi:10.1002/sim.9651>
+
+#' Horiguchi M, Tian L, Kehl K.L., and Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard: a novel test/estimation approach. <arXiv:2403.10742>
+
+#' Qian Z, Tian L, Horiguchi M, and Uno H. A novel stratified analysis method for testing and estimating overall treatment effects on time-to-event outcomes using average hazard with survival weight. Statistics in Medicine. 2025. <arXiv:2404.00788>
 #' @seealso
 #' survival survRM2 surv2sampleComp
 #' @importFrom stats pnorm qnorm

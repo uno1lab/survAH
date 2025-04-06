@@ -4,31 +4,45 @@
 \alias{ah2}
 \title{Two-Sample Comparison of Average Hazard}
 \usage{
-ah2(time, status, arm, tau=NULL, conf.int=0.95)
+ah2(time, status, arm, tau=NULL, conf.int=0.95, eta=0, strata=NULL)
 }
 \arguments{
-\item{time}{The follow-up time for right censored data.}
+\item{time}{A numeric vector of follow-up times for right-censored data.}
 
-\item{status}{The event indicator, 1=event, and 0=right censored.}
+\item{status}{A numeric vector indicating the event status; 1 = event occurred, 0 = right censored.}
 
-\item{arm}{The group indicator for comparison. The elements of this vector take either 1 or 0. Normally, 0=control group, 1=active treatment group.}
+\item{arm}{A binary vector indicating group assignment; elements should be either 0 or 1. Typically, 0 = control group and 1 = treatment group.}
 
-\item{tau}{A scalar value to specify a time point for calculating the average hazard. When \code{tau=NULL}, the default value (i.e., the maximum time point where the size of risk set for both groups remains at least 10) is used.}
+\item{tau}{A scalar specifying the end time point (\code{tau}) for calculating the average hazard. If \code{tau = NULL}, the default is the maximum time point at which the risk set size in both groups is at least 10.}
 
-\item{conf.int}{A confidence coefficient for calculating confidence intervals. The default is \code{conf.int=0.95}.}
+\item{conf.int}{A numeric value specifying the confidence level for confidence intervals. The default is \code{0.95}.}
+
+\item{eta}{A scalar specifying the start time point (\code{eta}) for calculating the average hazard over the time window [eta, tau]. The default is \code{0}.}
+
+\item{strata}{An optional numeric vector specifying a stratification factor for stratified analysis. If \code{strata = NULL} (default), an unstratified analysis is performed.}
 }
 \value{
-an object of class ah2.
+An object of class \code{ah2}, which contains the following components:
 
-\item{note}{the truncation time point used in the analysis}
+\item{note}{A note indicating the time window used in the analysis, specified as [eta, tau].}
 
-\item{n.obs}{the number of observations (total number, number of events by tau, number of censoring by tau, and size of risk set at tau)}
+\item{n.obs}{A summary of the number of observations, including the total number, number of events by tau, number of censored observations by tau, and the size of the risk set at tau.}
 
-\item{ah}{the estimated average hazard by arm}
+\item{ah}{Estimated average hazard in each arm.}
 
-\item{rah}{the ratio of average hazards (RAH; treatment over control)}
+\item{rah}{Ratio of average hazards (RAH), calculated as treatment over control.}
 
-\item{dah}{the difference of average hazard (DAH; treatment minus control)}
+\item{dah}{Difference of average hazards (DAH), calculated as treatment minus control.}
+
+\item{conventional_rah}{Ratio of average hazards based on the conventional stratified analysis method.}
+
+\item{conventional_dah}{Difference of average hazards based on the conventional stratified analysis method.}
+
+\item{stratified_ah}{Estimated average hazard by arm based on the proposed stratified analysis method.}
+
+\item{stratified_rah}{Ratio of average hazards based on the proposed stratified analysis method.}
+
+\item{stratified_dah}{Difference of average hazards based on the proposed stratified analysis method.}
 }
 \description{
 The \code{ah2} function performs two-sample comparisons using the average hazard (AH) as a summary measure of the survival time distribution.
@@ -41,21 +55,29 @@ It also calculates p-values for the two-sided tests based on the RAH and DAH.
 \examples{
 #====================================================================
 # cm214_pfs: The sample reconstructed data of the CheckMate214 study.
-# The code below reproduces the results reported by
-# Uno and Horiguchi (StatMed; 2023) in Table 6.
 #====================================================================
+# The code below reproduces the results reported by
+# Uno H and Horiguchi M (StatMed; 2023) in Table 6.
 D      = cm214_pfs
 time   = D$time
 status = D$status
 arm    = D$arm
 tau    = 21
 
-a = ah2(time=time, status=status, arm=arm, tau=tau, conf.int=0.95)
+a = ah2(time=time, status=status, arm=arm, tau=tau, conf.int=0.95, eta=0)
 print(a, digits=3)
+
+
+# The code below reproduces the results reported by
+# Horiguchi M, Tian L, Kehl K.L, Uno H (arXiv; 2024) in Table 3.
+b = ah2(time=time, status=status, arm=arm, tau=21, conf.int=0.95, eta=7)
+print(b, digits=3)
 }
 \references{
-Horiguchi M and Uno H. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. Statistics in Medicine. 2023;1-17. <doi:10.1002/sim.9651>
+Uno H and Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. Statistics in Medicine. 2023;1-17. <doi:10.1002/sim.9651>
+Horiguchi M, Tian L, Kehl K.L., and Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard: a novel test/estimation approach. <arXiv:2403.10742>
+Qian Z, Tian L, Horiguchi M, and Uno H. A novel stratified analysis method for testing and estimating overall treatment effects on time-to-event outcomes using average hazard with survival weight. Statistics in Medicine. 2025. <arXiv:2404.00788>
 }
 \author{
-Hajime Uno, Miki Horiguchi
+Hajime Uno, Miki Horiguchi, Zihan Qian
 }

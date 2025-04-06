@@ -4,9 +4,10 @@ home:
   title: Comparing Average Hazard with Survival Weight
 
 authors:
-  Miki Horiguchi:
   Hajime Uno:
     href: https://ds.dfci.harvard.edu/~huno/
+  Miki Horiguchi:
+  Zihan Qian:
 
 template:
   bootstrap: 5

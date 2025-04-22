@@ -120,10 +120,10 @@ F_tau_vec = rep(F_tau, length(RMSTt))
 RMST_tau  = RMSTt[k]
 RMST_tau_vec = rep(RMST_tau, length(RMSTt))
 
-tmp = dHt * ((1/F_tau_vec)*(1/F_tau_vec)/Gt)
+tmp = dHt * (((1-F_tau_vec)/F_tau_vec)*((1-F_tau_vec)/F_tau_vec)/Gt)
 v_F = sum(tmp[dHt!=0])
 
-tmp = dHt * ((RMSTt/RMST_tau_vec)*(RMSTt/RMST_tau_vec)/Gt)
+tmp = dHt * (((RMST_tau_vec-RMSTt)/RMST_tau_vec)*((RMST_tau_vec-RMSTt)/RMST_tau_vec)/Gt)
 v_R = sum(tmp[dHt!=0])
 
 #--- variance estimates for W^Q (log-transformed)

@@ -72,6 +72,22 @@ print(a, digits=3)
 # Horiguchi M, Tian L, Kehl K.L, Uno H (arXiv; 2024) in Table 3.
 b = ah2(time=time, status=status, arm=arm, tau=21, conf.int=0.95, eta=7)
 print(b, digits=3)
+
+
+#====================================================================
+# Stratified analysis example
+#====================================================================
+D      = myeloid
+time   = D$futime/365.25
+status = D$death
+arm    = as.numeric(D$trt=="A")
+tau    = 3
+strata = as.numeric(D$flt3)
+
+b = ah2(time=time, status=status, arm=arm, strata=strata, tau=tau)
+print(b, digits=3)
+ 
+
 }
 \references{
 Uno H and Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. Statistics in Medicine. 2023;1-17. <doi:10.1002/sim.9651>

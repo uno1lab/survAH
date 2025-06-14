@@ -31,7 +31,7 @@
 #' print(b)
 
 #'@export
-ah1 = function(time, status, tau, conf.int){
+ah1 = function(time, status, tau, conf.int=0.95){
 
   #====================================
   # Warning 
@@ -41,7 +41,11 @@ ah1 = function(time, status, tau, conf.int){
     #--- S(tau) will be S(max(time)) in the following calculation
   }
     
-
+  if(min(time)<=0){
+    print(paste0("time includes either 0 or negative number. Please check the input data."))
+    stop()
+  }
+  
 #--- initialize ---
 n     = length(time)
 indx  = order(time)

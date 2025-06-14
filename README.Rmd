@@ -38,4 +38,7 @@ Uno H and Horiguchi M. Ratio and difference of average hazard with survival weig
 
 Horiguchi M, Tian L, Kehl K.L., and Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard: a novel test/estimation approach. arXiv. 2024. <arXiv:2403.10742>
 
-Qian Z, Tian L, Horiguchi M, and Uno H. A novel stratified analysis method for testing and estimating overall treatment effects on time-to-event outcomes using average hazard with survival weight. Statistics in Medicine. 2025. <arXiv:2404.00788>
+Qian Z, Tian L, Horiguchi M, and Uno H. A novel stratified analysis method for testing and estimating overall treatment effects on time-to-event outcomes using average hazard with survival weight. Statistics in Medicine. 2025 Mar 30;44(7):e70056. <https://doi.org/10.1002/sim.70056>
+
+
+  

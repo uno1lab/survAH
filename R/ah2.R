@@ -53,9 +53,33 @@
 #' # Horiguchi M, Tian L, Kehl K.L, Uno H (arXiv; 2024) in Table 3.
 #' b = ah2(time=time, status=status, arm=arm, tau=21, conf.int=0.95, eta=7)
 #' print(b, digits=3)
-
+#' 
+#' 
+#' #====================================================================
+#' # Stratified analysis example
+#' #====================================================================
+#' D      = myeloid
+#' time   = D$futime/365.25
+#' status = D$death
+#' arm    = as.numeric(D$trt=="A")
+#' tau    = 3
+#' strata = as.numeric(D$flt3)
+#' 
+#' b = ah2(time=time, status=status, arm=arm, strata=strata, tau=tau)
+#' print(b, digits=3)
+#'  
+#' 
 #'@export
 ah2 <- function(time, status, arm, tau=NULL, conf.int=0.95, eta=0, strata=NULL){
+
+  #-----------------
+  #-- initial check 
+  #-----------------
+  if(min(time)<=0){
+    print(paste0("time includes either 0 or negative number. Please check the input data."))
+    stop()
+  }
+  
   #---------
   #-- tau --
   #---------

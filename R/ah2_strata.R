@@ -216,7 +216,11 @@ out_unstrat = ah2_core1(indat=data.frame(time=time, status=status, arm=arm), tau
   Z$ah    = out_unstrat$ah
   Z$rah   = out_unstrat$rah
   Z$dah   = out_unstrat$dah
-    
+
+    tmp=data.frame(total=nn, arm0=n0, arm1=n1)
+    tmp1=rbind(tmp, apply(tmp,2,sum))
+    rownames(tmp1)=c(paste0("strata",1:nrow(tmp)), "total")
+  Z$nn = tmp1 
   Z$conventional_rah = out3RAH #-- results with the conventional stratified analysis (RAH)
   Z$conventional_dah = out3DAH #-- results with the conventional stratified analysis (DAH)
   Z$stratified_ah    = result1 #--- results of AH for each arm (proposed analysis)

@@ -2,7 +2,7 @@
 title: "Vignette for survAH package"
 author: "Hajime Uno^[Dana-Farber Cancer Institute, huno@ds.dfci.harvard.edu], Miki
 Horiguchi^[Dana-Farber Cancer Institute, horiguchimiki@gmail.com], Zihan Qian^[Massachusetts General Hospital, zihanqian16@gmail.com]"
-date: "June 15, 2025"
+date: "December 1, 2025"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -23,9 +23,9 @@ An important objective of clinical research investigating the safety and efficac
 In those studies where time-to-event outcomes are clinical endpoints of interest, the traditional Cox's hazard ratio (HR) has been used for estimating and reporting the treatment effect magnitude for many decades. However, this traditional approach may not have provided the sufficient quantitative information that is needed for informed decision making in clinical practice for the following reasons. 
 First, this approach does not require calculating the absolute hazard in each group in order to calculate the HR, which is a desirable feature from a statistical point of view, but which makes the clinical interpretation difficult. From the clinical point of view, the two numbers from the treatment and control groups are necessary for interpreting a between-group contrast measure (e.g., difference or ratio). Second, if the proportional hazards assumption is not correct, the interpretation of HR is not obvious because it is affected by the underlying study-specific censoring time distribution.[1,2] 
 
-The average hazard with survival weight (AHSW), which can be interpreted as the general censoring-free incidence rate (CFIR), is a summary measure of the event time distribution and does not depend on the underlying study-specific censoring time distribution. The approach using AHSW (or CFIR) provides two numbers from the treatment and control groups and allows us to summarize the treatment effect magnitude in both absolute and relative terms, which would enhance the clinical interpretation of the treatment effect on time-to-event outcomes.[3,4] 
+The average hazard with survival weight (AHSW), which can be interpreted as the general censoring-free incidence rate (CFIR), is a summary measure of the event time distribution and does not depend on the underlying study-specific censoring time distribution. The approach using AHSW (or CFIR) provides two numbers from the treatment and control groups and allows us to summarize the treatment effect magnitude in both absolute and relative terms, which would enhance the clinical interpretation of the treatment effect on time-to-event outcomes.[3,4,5,6] 
 
-This vignette is a supplemental documentation for the *survAH* package and illustrates how to use the functions in the package to compare two groups with respect to the AHSW (or CFIR). The package was made and tested on R version 4.4.1.
+This vignette is a supplemental documentation for the *survAH* package and illustrates how to use the functions in the package to compare two groups with respect to the AHSW (or CFIR). The package was made and tested on R version 4.5.2.
 
 ## 2 Installation
 
@@ -47,7 +47,7 @@ devtools::install_github("uno1lab/survAH")
 
 ## 2 Sample Reconstructed Data
 
-Throughout this vignette, we use sample reconstructed data of the CheckMate214 study  reported by Motzer et al. [5] The data consists of 847 patients with previously untreated clear-cell advanced renal-cell carcinoma; 425 for the nivolumab plus ipilimumab group (treatment) and 422 for the sunitinib group (control).
+We use sample reconstructed data of the CheckMate214 study reported by Motzer et al. [7]. The data consists of 847 patients with previously untreated clear-cell advanced renal-cell carcinoma; 425 for the nivolumab plus ipilimumab group (treatment) and 422 for the sunitinib group (control).
 
 The sample reconstructed data of the CheckMate214 study is available on *survAH* package as *cm214_pfs*.
 To load the data, copy and paste the following scripts to the command line.
@@ -79,7 +79,7 @@ where $h(t)$ and $w(t)$ are the hazard function for the event time $T,$ and a no
 Let $S(t)$ be the survival function for $T.$
 We use $S(t)$ as the weight, which gives the AHSW
 $$ \eta(t) = \frac{\int_0^\tau h(u)S(u)du}{\int_0^\tau S(u)du}.$$
-The detailed motivation for using $S(t)$ as $w(t)$ was discussed in Uno and Horiguchi [3].
+The detailed motivation for using $S(t)$ as $w(t)$ was discussed in Uno and Horiguchi (2023) [3].
 The AHSW has a clear interpretation as the average person-time incidence rate on a given time window $[0,\tau].$
 It can also be called as the general censoring-free incidence rate (CFIR) in contrast to the conventional person-time incidence rate that potentially depends on an underlying study-specific censoring time distribution.
 
@@ -90,7 +90,7 @@ $$ \eta(\tau) = \frac{1-S(\tau)}{\int_0^\tau S(t)dt}.$$
 Let $\widehat{S}(t)$ denote the Kaplan-Meier estimator for $S(t).$
 A natural estimator for $\eta(\tau)$ is then given by  
 $$ \widehat{\eta}(\tau) = \frac{1-\widehat{S}(\tau)}{\int_0^\tau {\widehat S} (t)dt}.$$
-The large sample properties and a standard error formula of $\widehat{\eta}(\tau)$ are given in Uno and Horiguchi [3].
+The large sample properties and a standard error formula of $\widehat{\eta}(\tau)$ are given in Uno and Horiguchi (2023) [3].
 
 
 ## 4 Two-sample comparison using AH and its implementation
@@ -105,7 +105,7 @@ $$ \eta_{1}(\tau) / \eta_{0}(\tau) $$
 
 
 These are estimated by simply replacing $\eta_{1}(\tau)$ and $\eta_{0}(\tau)$ by their empirical counterparts (i.e., $\widehat{\eta_{1}}(\tau)$ and $\widehat{\eta_{0}}(\tau)$, respectively). For the inference of the ratio type metrics, we use the delta method to calculate the standard error. Specifically, we consider $\log \{ \widehat{\eta_{1}}(\tau)\}$ and $\log \{ \widehat{\eta_{0}}(\tau)\}$ and calculate the standard error of log-AH.
-We then calculate a confidence interval for the log-ratio of AH, and transform it back to the original ratio scale; the detailed formula is given in [4].
+We then calculate a confidence interval for the log-ratio of AH, and transform it back to the original ratio scale; the detailed formula is given in Uno and Horiguchi (2023) [3].
 
 The procedures below show how to use the function, **ah2**, to implement these analyses.
 ```{r, echo=TRUE, eval=TRUE}
@@ -142,7 +142,7 @@ The estimated AHs were 0.049 (0.95CI: 0.042 to 0.057) and 0.066 (0.95CI: 0.057 t
 
 ## 5 Stratified analysis using the AH and its implementation
 
-Stratified analysis is commonly used in clinical trials to adjust for imbalanced baseline characteristics or known prognostic factors. However, traditional stratified methods (e.g., Stratified Cox or CMH) assume homogeneous effects across strata, which may not hold in practice. To overcome this, we extend the AH framework to stratified settings using standardization[4]. 
+Stratified analysis is commonly used in clinical trials to adjust for imbalanced baseline characteristics or known prognostic factors. However, traditional stratified methods (e.g., Stratified Cox or CMH) assume homogeneous effects across strata, which may not hold in practice. To overcome this, we extend the AH framework to stratified settings using standardization [4]. 
 This approach adjusts for stratification while preserving the interpretability of both absolute and relative treatment effects.
 
 In this framework, treatment effects are summarized using the adjusted average hazard (AH), which is defined based on standardized survival curves across strata:
@@ -183,11 +183,10 @@ $$
 \widehat{\text{RAH}}(\tau) = \frac{\widehat{\bar{\eta}}_1(\tau)}{\widehat{\bar{\eta}}_0(\tau)}.
 $$
 
-We also illustrate how to perform stratified analysis using the AH with the *myeloid* dataset from the *survival* package. This dataset simulates a randomized trial in acute myeloid leukemia and includes a stratification factor based on mutations of the FLT3 gene (levels A, B, C), which is known to affect prognosis.[6]
+We also illustrate how to perform stratified analysis using the AH with the *myeloid* dataset from the *survival* package. This dataset simulates a randomized trial in acute myeloid leukemia and includes a stratification factor based on mutations of the FLT3 gene (levels A, B, C), which is known to affect prognosis [8].
 
 
 ```{r, echo=TRUE, eval=TRUE, message=FALSE}
-library(survival)
 nrow(myeloid)
 head(myeloid)
 
@@ -256,9 +255,178 @@ print(myel_obj,digit = 3)
 As shown in the **ah2** results above,  in the unstratified analysis, the estimated AHs were 0.290 (95% CI: 0.245 to 0.343) for the control group and 0.207 (95% CI: 0.175 to 0.246) for the treatment group. The estimated RAH was 0.715 (95% CI: 0.563 to 0.910, p = 0.006), and the DAH was -0.082 (95% CI: -0.143 to -0.022, p = 0.007). In the stratified analysis, which adjusts for FLT3 mutation subgroups, the AHs were 0.286 (95% CI: 0.235 to 0.337) for the control group and 0.207 (95% CI: 0.170 to 0.243) for the treatment group. The RAH was 0.723 (95% CI: 0.562 to 0.930, p = 0.011), and the DAH was -0.079 (95% CI: -0.142 to -0.016, p = 0.013).
 
 
-## 6 Conclusions
-As illustrated, the presented approach using AHSW provides more robust and reliable quantitative information about the treatment effect on time-to-event outcomes than the traditional Cox's hazard ratio approach. 
-We hope the AHSW-based approach, along with this *survAH* package, will be helpful to clinical researchers by providing interpretable quantitative information about the treatment effect magnitude, which will ultimately foster better informed decision making.  
+## 6 Regression analysis for AH and its implementation
+
+Sections 4 and 5 focused on two-sample comparisons of AH, with or without stratification. 
+In clinical research, however, regression models are frequently used to adjust for confounding factors, investigate prognostic variables, and develop risk prediction models for patient outcomes. 
+Motivated by these needs, Uno et al. (2024) [6] proposed a regression analysis framework for AH at a pre-specified truncation time $\tau$.
+
+The AH regression framework is a general regression modeling approach for assessing the association between model covariates and the outcome. In the two-group setting considered previously, it can be used to perform between-group comparisons while adjusting for multiple covariates that may be associated with the outcome. This framework allows the treatment effect to be summarized in both absolute (difference in AH) and relative (ratio of AH) terms, along with the group-specific AH values, while simultaneously adjusting for important baseline characteristics, thereby improving the likelihood that the magnitude of the treatment effect is correctly interpreted in clinical settings.
+
+The **ahreg** function can handle three kinds of censoring mechanisms:
+
+1. **Independent censoring**  
+2. **Group-specific censoring**  
+3. **Covariate-dependent censoring**
+
+Let $\eta(\tau \mid \mathbf{X})$ denote the AH at time $\tau$ for an individual with covariate vector $\mathbf{X} = (X_1,\ldots,X_p)^\top$. The **ahreg** function fits a regression model of the form
+$$
+g\{\eta(\tau \mid \mathbf{X})\}
+= \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p,
+$$
+where $g(\cdot)$ is a link function. 
+
+The current implementation supports the following link functions:
+
+- **log link**: $g(x) = \log(x)$ (default),  
+- **identity link**: $g(x) = x$.
+
+Under the log link, $\exp(\beta_j)$ represents the **ratio of AH (RAH)** associated with a one-unit increase in covariate $X_j$, adjusted for other covariates. Under the identity link, $\beta_j$ represents the **difference in AH** associated with a one-unit increase in $X_j$, adjusted for other covariates. Further methodological details and the large-sample properties of the estimator are described in Uno et al. (2024) [6].
+
+
+### 6.1 Example data
+
+We illustrate the use of **ahreg** with a subset of the *pbc* dataset from the *survival* package. The original dataset includes 418 patients, comprising both randomized and non-randomized cases. For this vignette, we use the 312 patients who participated in the randomized clinical trial (158 assigned to D-penicillamine and 154 to placebo). The *survAH* package provides the helper function **ahreg.sample.data()**, which extracts and prepares the analysis dataset for illustrating examples of AH regression analysis.
+
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+D = ahreg.sample.data()
+nrow(D)
+head(D)
+```
+
+Here, **time** is years from registration to death or last known alive; **status** is the event indicator (1 = death, 0 = censored); and **arm** is the treatment assignment indicator (1 = D-penicillamine, 0 = placebo).
+
+For baseline covariates, the dataset includes **age** (years), **edema** (0 = no edema, 0.5 = untreated or successfully treated, 1 = edema despite diuretic therapy), **bili** (serum bilirubin in mg/dl), **albumin** (serum albumin in g/dl), and **protime** (standardized blood clotting time).
+
+Below is the KM estimate of time to death by treatment group.
+
+```{r, echo=FALSE, eval=TRUE, fig.height=7, fig.width=7}
+plot(survfit(Surv(time, status)~arm, data=D), col=c("blue","red"), lwd=2, mark.time=F, xlab="Years", ylab="Probability")
+legend("bottomleft", c("Placebo (arm=0)", "D-penicillamine (arm=1)"), col=c("blue", "red"), lwd=2)
+```
+
+In the following subsections (6.2, 6.3, and 6.4), we illustrate how to implement AH regression for each of the three censoring mechanisms, using the log link, $g(x) = \log(x)$ as the link function. Section 6.5 illustrates the case of using the identity link $g(x) = x$.
+
+### 6.2 AH regression under independent censoring
+
+The first example is the application of **ahreg** under independent censoring assumption. 
+Because the default values of **cens_strata** and **cens_covs** are **NULL**, 
+the AH regression can be implemented in the following simple specification:
+
+```{r, echo=TRUE, eval=TRUE}
+a1 <- ahreg(Surv(time, status) ~ arm + edema + bili, 
+            tau  = 7, 
+            data = D)
+```
+
+The key arguments are:
+
+- **formula**: a survival formula with the response `Surv(time, status)` on the left of a `~` operator and covariates on the right.  
+- **tau**: the truncation time $\tau$ at which AH is defined and estimated.  
+- **data**: a data frame containing variables referenced in the formula.  
+- **link**: the link function to be used, either `"log"` or `"identity"` (default = `"log"`).  
+- **conf.int**: the confidence level for constructing confidence intervals (default = `0.95`).  
+
+The output provides coefficient estimates, standard errors, confidence intervals, $z$-values, and two-sided p-values for each predictor.
+
+```{r, echo=TRUE, eval=TRUE}
+print(a1, digits=3)
+```
+
+In this example, the estimated coefficient for **arm** is $\hat{\beta}_{\text{arm}} = 0.297$. Under the log link, exponentiating this value yields the ratio of AH:
+
+$$
+\exp({\hat{\beta}}_{\text{arm}}) \approx 1.34.
+$$
+This result can be summarized as:
+
+<div style="text-align: center;">
+
+The adjusted ratio of AH was 1.34 (95% CI: 0.88, 2.06; p-value=0.172).
+
+</div>
+
+This indicates that, on average, the treatment group experienced a 34% higher incidence rate of death than the placebo group over 7 years of follow-up, after adjusting for **edema** and **bili**.
+
+
+### 6.3 AH regression with group-specific censoring
+
+Next, we consider the AH regression under a **group-specific censoring** scenario. 
+Suppose the underlying censoring distribution differs across treatment groups.
+This situation may arise, for example, when follow-up schedules or discontinuation patterns vary by treatment arm.
+
+We use the **cens_strata** argument to specify the variable that is associated with censoring time. 
+This option instructs **ahreg** to estimate the censoring distribution separately within each specified group, 
+enabling valid AH estimation and regression even when censoring behavior differs across treatment groups.
+In the present case, the code is as follows: 
+```{r, echo=TRUE, eval=TRUE}
+a2 = ahreg(Surv(time, status) ~ arm + edema + bili,
+           tau         = 7,
+           data        = D,
+           cens_strata = "arm")
+```
+
+While we used the treatment group (i.e., **arm**) in this example, any variable that defines groups with potentially different censoring distributions can be assigned to **cens_strata**. Note that **cens_strata** accepts only one variable. Thus, if several variables (e.g., **arm** and **sex**) are thought to influence censoring, one needs to create a new variable combining them and then specify this combined variable in **cens_strata**. When many variables are associated with censoring, or when a continuous variable is involved, a different approach is preferable (see Section 6.4).
+
+As before, exponentiated coefficients under the log link yield the ratio of AH, now adjusted for group-specific censoring mechanisms.
+
+```{r, echo=TRUE, eval=TRUE}
+print(a2, digits = 3)
+```
+
+### 6.4 AH regression with covariate-dependent censoring
+Lastly, we consider AH regression under a **covariate-dependent censoring** scenario.
+In this setting, a Cox model is fitted to the censoring time to estimate the censoring distribution as a function of the variables specified in **cens_covs**. This argument accepts a vector of variable names (default = `NULL`).
+The resulting regression estimates account for covariate-dependent censoring, providing a more flexible approach when the censoring mechanism is complex.
+
+Suppose both **arm** and **edema** are associated with the censoring time.
+In this case, the code is as follows:
+
+```{r, echo=TRUE, eval=TRUE}
+a3 <- ahreg(Surv(time, status) ~ arm + edema + bili,
+            tau       = 7,
+            data      = D,
+            cens_covs = c("arm", "edema"))
+```
+
+
+```{r, echo=TRUE, eval=TRUE}
+print(a3, digits = 3)
+```
+
+Note that only one of `cens_strata` or `cens_covs` can be specified in the **ahreg** function.
+
+
+### 6.5 AH regression with the identity link
+
+The choice of link function determines how the regression coefficients are interpreted. 
+To model absolute differences in AH rather than ratios, the identity link can be used by setting `link = "identity"`.
+
+
+```{r, echo=TRUE, eval=TRUE}
+a4 <- ahreg(Surv(time, status) ~ arm + edema + bili,
+            tau       = 7,
+            data      = D,
+            cens_covs = c("arm", "edema"),
+            link      = "identity")
+```
+
+Under the identity link, each coefficient $\beta_j$ represents the absolute difference in AH associated with a one-unit increase in covariate $X_j$.  
+
+
+```{r, echo=TRUE, eval=TRUE}
+print(a4, digits = 3)
+```
+
+In this example, a coefficient of 0.004 for **arm** (95% CI: –0.027, 0.036; p-value=0.783) indicates that the AH in the treatment group is 0.004 units (death events per person-year) higher than in the placebo group at $\tau = 7$, after adjusting for **edema** and **bili**.
+
+This specification is useful when the primary focus is on the absolute difference in AH.
+
+## 7 Conclusions
+As illustrated in this vignette, AH-based methods provide more robust and reliable quantitative summaries of time-to-event outcomes than the traditional Cox hazard ratio approach. 
+We anticipate that the procedures implemented in the *survAH* package will help clinical researchers quantify treatment effects in a more transparent and interpretable manner, thereby supporting more informed decision making in clinical practice.
+
 
 ## References
 [1] Uno H, Claggett B, Tian L, et al. Moving beyond the hazard ratio in quantifying the between-group difference in survival analysis. J Clin Oncol. 2014 Aug 1;32(22):2380-5. doi: 10.1200/JCO.2014.55.2208. Epub 2014 Jun 30. PMID: 24982461; PMCID: PMC4105489.     
@@ -269,6 +437,10 @@ We hope the AHSW-based approach, along with this *survAH* package, will be helpf
 
 [4] Qian Z, Tian L, Horiguchi M, Uno H. A Novel Stratified Analysis Method for Testing and Estimating Overall Treatment Effects on Time-To-Event Outcomes Using Average Hazard With Survival Weight. Stat Med. 2025 Mar 30;44(7):e70056. doi: 10.1002/sim.70056. PMID: 40213923.
 
-[5] Motzer RJ, Tannir NM, McDermott DF, et al. Nivolumab plus Ipilimumab versus Sunitinib in Advanced Renal-Cell Carcinoma. N Engl J Med. 2018 Apr 5;378(14):1277-1290. doi: 10.1056/NEJMoa1712126. Epub 2018 Mar 21. PMID: 29562145; PMCID: PMC5972549.
+[5] Horiguchi M, Tian L, Kehl KL, Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard: a novel test/estimation approach. Lifetime Data Anal. 2025 Oct;31(4):784-809. doi: 10.1007/s10985-025-09671-0. Epub 2025 Oct 14. PMID: 41085870; PMCID: PMC12586407.
 
-[6] Le-Rademacher JG, Peterson RA, Therneau TM, Sanford BL, Stone RM, Mandrekar SJ. Application of multi-state models in cancer clinical trials. Clin Trials. 2018 Oct;15(5):489-498. doi: 10.1177/1740774518789098. Epub 2018 Jul 23. PMID: 30035644; PMCID: PMC6133743.
+[6] Uno H, Tian L, Horiguchi M, Hattori S, Kehl KL. Regression models for average hazard. Biometrics. 2024 Mar 27;80(2):ujae037. doi: 10.1093/biomtc/ujae037. PMID: 38771658; PMCID: PMC11107592.
+
+[7] Motzer RJ, Tannir NM, McDermott DF, et al. Nivolumab plus Ipilimumab versus Sunitinib in Advanced Renal-Cell Carcinoma. N Engl J Med. 2018 Apr 5;378(14):1277-1290. doi: 10.1056/NEJMoa1712126. Epub 2018 Mar 21. PMID: 29562145; PMCID: PMC5972549.
+
+[8] Le-Rademacher JG, Peterson RA, Therneau TM, Sanford BL, Stone RM, Mandrekar SJ. Application of multi-state models in cancer clinical trials. Clin Trials. 2018 Oct;15(5):489-498. doi: 10.1177/1740774518789098. Epub 2018 Jul 23. PMID: 30035644; PMCID: PMC6133743.

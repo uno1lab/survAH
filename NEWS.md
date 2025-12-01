@@ -1,14 +1,29 @@
+# survAH version 1.2.0 (2025-12-01)
+
+### New features
+* The *ahreg()* function has been introduced to enable regression analysis for the average hazard.
+* *print.ahreg()* method has been added to provide formatted output from *ahreg()*.
+
+
+---
+
 # survAH version 1.1.2 (2025-06-15)
 
 ### Changes
-* The *ah1()* and *ah2()* check the input data to make sure time does not involve 0 or negative numbers. 
+* The *ah1()* and *ah2()* functions check the input data to make sure time does not involve 0 or negative numbers. 
 * An example for stratified analysis is added for *ah2()*.
 * *print.ah2()* is updated to produce a nicer output.
+
+---
 
 # survAH version 1.1.1 (2025-04-30)
 
 ### Changes
 * The *ah1()* function is now provide the variance for RMST and cumulative incidence probability as well as averaage hazard. 
+
+
+---
+
 
 # survAH version 1.1.0 (2025-04-04)
 

@@ -90,9 +90,9 @@ print(b, digits=3)
 
 }
 \references{
-Uno H and Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. Statistics in Medicine. 2023;1-17. <doi:10.1002/sim.9651>
-Horiguchi M, Tian L, Kehl K.L., and Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard: a novel test/estimation approach. <arXiv:2403.10742>
-Qian Z, Tian L, Horiguchi M, and Uno H. A novel stratified analysis method for testing and estimating overall treatment effects on time-to-event outcomes using average hazard with survival weight. Statistics in Medicine. 2025. <arXiv:2404.00788>
+Uno H and Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. Statistics in Medicine. 2023; 42(7):936-952. <doi:10.1002/sim.9651>
+Horiguchi M, Tian L, Kehl KL, Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard: a novel test/estimation approach. Lifetime Data Anal. 2025; 31(4):784-809. <doi:10.1007/s10985-025-09671-0>
+Qian Z, Tian L, Horiguchi M, Uno H. A novel stratified analysis method for testing and estimating overall treatment effects on time-to-event outcomes using average hazard with survival weight. Stat Med. 2025; 44(7):e70056. <doi:10.1002/sim.70056>
 }
 \author{
 Hajime Uno, Miki Horiguchi, Zihan Qian

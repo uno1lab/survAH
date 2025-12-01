@@ -1,0 +1,45 @@
+# survAH: Survival Data Analysis using Average Hazard
+
+The survAH package performs two-sample comparisons based on average
+hazard with survival weight (AHSW) or general censoring-free incidence
+rate (CFIR).
+
+## Installation
+
+To install the package from the CRAN:
+
+``` r
+install.packages("survAH")
+```
+
+To install the most updated version:
+
+``` r
+devtools::install_github("uno1lab/survAH")
+```
+
+## Usage
+
+Please see the package vignette on the website
+<https://www.uno1lab.com/survAH/>
+
+## Reference
+
+Uno H and Horiguchi M. Ratio and difference of average hazard with
+survival weight: new measures to quantify survival benefit of new
+therapy. Statistics in Medicine. 2023;42(7):936-952.
+<https://doi.org/10.1002/sim.9651>
+
+Uno H, Tian L, Horiguchi M, Hattori S, Kehl KL. Regression models for
+average hazard. Biometrics. 2024; 80(2):ujae037.
+<https://doi.org/10.1093/biomtc/ujae037>
+
+Horiguchi M, Tian L, Kehl KL, Uno H. Assessing delayed treatment
+benefits of immunotherapy using long-term average hazard: a novel
+test/estimation approach. Lifetime Data Anal. 2025; 31(4):784-809.
+<https://doi.org/10.1007/s10985-025-09671-0>
+
+Qian Z, Tian L, Horiguchi M, Uno H. A novel stratified analysis method
+for testing and estimating overall treatment effects on time-to-event
+outcomes using average hazard with survival weight. Stat Med. 2025;
+44(7):e70056. <https://doi.org/10.1002/sim.70056>

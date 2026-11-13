@@ -11,7 +11,7 @@ cox1 = function(time, status, covariates, tau=NULL){
   tmpD = data.frame(cbind(time, status, covariates))
   vars = colnames(tmpD)[c(-1,-2)]
   fmla = as.formula(paste("Surv(time, status)~", paste(vars, collapse="+")))
-  ft   = coxph(fmla, data=tmpD)
+  ft   = coxph(fmla, data=tmpD, ties="efron")
   beta = summary(ft)$coef[,1]
   
   if(ncov==1){ 

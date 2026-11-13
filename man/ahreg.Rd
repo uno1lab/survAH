@@ -5,10 +5,10 @@
 \title{Regression Analysis with Average Hazard}
 \usage{
 ahreg(formula, tau, data, link="log", conf.int=0.95, 
-             cens_strata=NULL, cens_covs=NULL)
+             cens_strata=NULL, cens_covs=NULL, maxiter=20, tol=1e-15)
 }
 \arguments{
-\item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the Surv function. For a multi-state model the formula may be a list of formulas.}
+\item{formula}{A formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object of the form \code{Surv(time, status)} as returned by the \code{Surv} function.}
 
 \item{tau}{A scalar value to specify a time point for calculating the average hazard.}
 
@@ -21,17 +21,31 @@ ahreg(formula, tau, data, link="log", conf.int=0.95,
 \item{cens_strata}{A variable name for specifying group-specific censoring. Only one of \code{cens_strata} or \code{cens_cov} can be specified. The default is \code{NULL}.}
 
 \item{cens_covs}{A set of variable names used for modeling censoring time distribution. Only one of \code{cens_strata} or \code{cens_covs} can be specified. The default is \code{NULL}.}
+
+\item{maxiter}{The maximum number of Newton-Raphson iterations. The default is \code{20}.}
+
+\item{tol}{The convergence criterion for the Newton-Raphson iterations; the iterations stop when the squared norm of the update is at most \code{tol}. The default is \code{1e-15}.}
 }
 \value{
 an object of class ahreg.
 
-\item{result}{A table containing the coefficient estimates, standard errors, confidence intervals, z-values, and two-sided p-values for each predicotor.}
+\item{result}{A table containing the coefficient estimates, standard errors, confidence intervals, z-values, and two-sided p-values for each predictor.}
+
+The object also carries attributes, including \code{beta} (the coefficient estimates), \code{beta.var} (their variance-covariance matrix), \code{ipcw} (the inverse probability of censoring weights), \code{ipcw_max} (the largest weight), \code{n_risk_tau} (the number of subjects at risk at \code{tau}), and \code{convergence_information} (a list with \code{convergence}, 0 if converged and 9 otherwise, \code{iterations}, and the iteration history).
 }
 \description{
 The \code{ahreg} function performs a regression analysis for the average hazard (AH).
 }
 \details{
-The function implements the average hazard regression.
+The function implements the average hazard regression of Uno et al. (2024).
+
+The data must have one record per subject with entry at time zero, right censoring, and baseline covariates; delayed entry and multiple records per subject are not supported.
+
+Endpoint convention: an event recorded exactly at \code{tau} is counted as an event in [0, tau], following the usual convention that events precede censorings at tied times; it contributes person-time \code{tau} with weight 1/G(tau), where G is the estimated censoring survival function, the same weight as an observation censored at \code{tau}, which is taken to have survived beyond \code{tau} and contributes person-time \code{tau} only. This is the convention used by \code{\link{ah1}} and \code{\link{ah2}}. The sample estimating equation in Uno et al. (2024) is written with I(X < tau) under the continuous-time assumption, where ties at \code{tau} have probability zero; the population quantity, pr(T <= tau | Z), is the same under either convention.
+
+Censoring model: with \code{cens_covs}, the censoring time distribution is modeled by a Cox model fitted with \code{coxph()} using Efron tie handling (\code{ties = "efron"}). The Stata implementation \code{stahreg} uses \code{stcox, efron} for the same reason.
+
+Input checks: the function stops when \code{tau} exceeds the largest observed time (overall or within a censoring stratum), when the estimated censoring survival probability is zero for a subject whose weight is needed, when the covariates are collinear, or when no event is observed before \code{tau} under the log link. It warns when fewer than 10 subjects are at risk at \code{tau} (overall or within a censoring stratum), when the largest inverse probability of censoring weight exceeds 20, and when the Newton-Raphson iterations do not converge.
 }
 \examples{
 #================================================================================

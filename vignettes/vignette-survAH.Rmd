@@ -1,7 +1,6 @@
 ---
 title: "Vignette for survAH package"
-author: "Hajime Uno^[Dana-Farber Cancer Institute, huno@ds.dfci.harvard.edu], Miki
-Horiguchi^[Dana-Farber Cancer Institute, horiguchimiki@gmail.com], Zihan Qian^[Massachusetts General Hospital, zihanqian16@gmail.com]"
+author: "Hajime Uno^[Dana-Farber Cancer Institute, huno@ds.dfci.harvard.edu], Miki Horiguchi^[Dana-Farber Cancer Institute, horiguchimiki@gmail.com], Zihan Qian^[Massachusetts General Hospital, zihanqian16@gmail.com]"
 date: "December 1, 2025"
 output: rmarkdown::html_vignette
 vignette: >

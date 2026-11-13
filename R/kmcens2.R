@@ -108,8 +108,10 @@ kmcens2 = function(time, status, tau=NULL){
   pit[time>=tau]             = ghat.tau
   pit[time<=tau & status==1] = ghat.x[time<=tau & status==1]
   
-  #--- Indicator ---
-  vit = as.numeric(time<=tau)*status + as.numeric(time>=tau)
+  #--- Indicator: event in [0, tau] or event-free through tau (0/1-valued) ---
+  #--- An event recorded exactly at tau satisfies both conditions and gets
+  #--- ghat.x = ghat.tau = G(tau-), i.e. the same weight as a censoring at tau.
+  vit = as.numeric((time<=tau & status==1) | (time>=tau))
   
   #--- IPCW ---
   ipcw         = rep(0,n)

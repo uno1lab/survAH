@@ -18,7 +18,11 @@ ah1(time, status, tau, conf.int=0.95)
 \value{
 An object of class \code{ah1}, which contains the following components:
 
-\item{need_stop}{Logical indicator. If \code{TRUE}, specify another \code{tau}. The survival probability at the specified \code{tau} needs to be > 0.}
+\item{need_stop}{Logical indicator. \code{TRUE} when nonparametric inference is not supported at the specified \code{tau}, which happens when the Kaplan-Meier estimate of the survival probability at \code{tau} is zero or when no subject remains at risk at \code{tau} (the largest observed time is smaller than \code{tau}). In that case, the returned estimates and standard errors should not be reported; specify a smaller \code{tau}.}
+
+\item{stop_reason}{Character string giving the reason when \code{need_stop = TRUE} (\code{"no subject at risk at tau"} or \code{"Kaplan-Meier estimate of S(tau) is zero"}); \code{NA} otherwise.}
+
+\item{max_time}{The largest observed time in the data.}
 
 \item{tau}{The truncation time point used in the analysis.}
 

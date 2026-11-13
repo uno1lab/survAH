@@ -36,8 +36,12 @@ ah2_strata = function(time, status, arm, strata, tau, conf.int, weights=NULL){
     n0[i]     = sum(st_arm==0) 
     nn[i]     = n1[i] + n0[i]
     
-    #--- run AH2 ---
-    ft = ah2_core1(indat=data.frame(time=st_time, status=st_status, arm=st_arm), tau=tau, conf.int=conf.int)
+    #--- run AH2 (re-raise an error from ah2_core1 with the stratum label) ---
+    ft = tryCatch(
+      ah2_core1(indat=data.frame(time=st_time, status=st_status, arm=st_arm), tau=tau, conf.int=conf.int),
+      error = function(e){
+        stop(paste0("Stratum ", ustrata[i], ": ", conditionMessage(e)), call.=FALSE)
+      })
     
     F0tau[i]   = attributes(ft)$F0tau
     F1tau[i]   = attributes(ft)$F1tau
@@ -205,7 +209,11 @@ ah2_strata = function(time, status, arm, strata, tau, conf.int, weights=NULL){
 #--------------------------------------------
 #-- Results of the unstratified analysis 
 #--------------------------------------------
-out_unstrat = ah2_core1(indat=data.frame(time=time, status=status, arm=arm), tau=tau, conf.int=conf.int)
+out_unstrat = tryCatch(
+  ah2_core1(indat=data.frame(time=time, status=status, arm=arm), tau=tau, conf.int=conf.int),
+  error = function(e){
+    stop(paste0("Pooled data: ", conditionMessage(e)), call.=FALSE)
+  })
     
 #---------------
 #---- output ---

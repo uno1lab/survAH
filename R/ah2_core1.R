@@ -2,6 +2,17 @@
 # ah2_core1.R (hidden)
 #=========================
 
+#--- Error message when ah1() flags need_stop for one arm
+ah2_stop_message <- function(wk, tau, arm){
+  if(identical(wk$stop_reason, "no subject at risk at tau")){
+    msg1 = paste0("No subject remains at risk at tau = ", tau, " in arm ", arm,
+                  " (largest observed time ", signif(wk$max_time, 6), ").")
+  }else{
+    msg1 = paste0("The Kaplan-Meier estimate of S(tau) is zero at tau = ", tau, " in arm ", arm, ".")
+  }
+  paste0(msg1, " Nonparametric inference for the average hazard is not supported at this tau; specify a smaller tau.")
+}
+
 ah2_core1 <- function(indat, tau, conf.int){
   #-------------------------------------------------------
   # AH (average hazard), F (t-year event rate), R (rmst) - observed
@@ -12,9 +23,9 @@ ah2_core1 <- function(indat, tau, conf.int){
   
   wk0 = ah1(time=D0$time, status=D0$status, tau=tau, conf.int=conf.int)
   
-  #--Check S_{0}(tau)>0
-  if(wk0$need_stop==TRUE){
-    stop("The survival probability at the specified tau for arm 0 needs to be >0. Please specify another tau.")
+  #--Check that nonparametric inference is supported at tau in arm 0
+  if(isTRUE(wk0$need_stop)){
+    stop(ah2_stop_message(wk0, tau=tau, arm=0), call.=FALSE)
   }
   
   #--
@@ -32,9 +43,9 @@ ah2_core1 <- function(indat, tau, conf.int){
   
   wk1 = ah1(time=D1$time, status=D1$status, tau=tau, conf.int=conf.int)
   
-  #--Check S_{1}(tau)>0
-  if(wk1$need_stop==TRUE){
-    stop("The survival probability at the specified tau for arm 1 needs to be >0. Please specify another tau.")
+  #--Check that nonparametric inference is supported at tau in arm 1
+  if(isTRUE(wk1$need_stop)){
+    stop(ah2_stop_message(wk1, tau=tau, arm=1), call.=FALSE)
   }
   
   #--
